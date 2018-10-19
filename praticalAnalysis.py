@@ -34,14 +34,14 @@ def gethist(data,i):
     
     return x,y
 
-def plothist(x,y,i,tip):
+def plothist(x,y,i,tip,c):
     #import matplotlib.pyplot as plt
     ## Plot things
     #orange = '#ff7f0eff'
-
-    hist, = ax1.plot(x,y)
+    plt.bar(x, y, width = (np.diff(x)[0]), align='center', alpha = 0.5, color = c)
+    #hist, = ax1.plot(x,y,label=tip)
     ax1.set_ylabel('Normalized Histogram', fontsize = 16)
-    ax1.legend([hist], [tip])
+    #ax1.legend([hist], [tip])
     ax1.set_xlabel('Variable ' + str(i), fontsize = 16)
     
 if __name__ == '__main__':
@@ -57,6 +57,6 @@ if __name__ == '__main__':
     x2,y2=gethist(datab,i)
     ## Plot things
     fig, ax1 = plt.subplots(figsize=(8,6),dpi=100)
-    plothist(x1,y1,i,'Signal')
-    plothist(x2,y2,i,'Background')
-    #plt.legend()
+    plothist(x1,y1,i,'Signal','Blue')
+    plothist(x2,y2,i,'Background', 'Red')
+    plt.legend()
