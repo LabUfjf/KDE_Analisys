@@ -1,3 +1,18 @@
+"""
+Created on Wed Oct  17 10:32:13 2018
+
+@author: Igor
+
+In this file we have a few functions:
+    - ash
+    - area2d
+    - bin_fd
+
+
+"""
+
+
+
 def ash(data,m=10,tip='nearest'):
 
     """

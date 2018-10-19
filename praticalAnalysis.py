@@ -8,9 +8,9 @@ Created on Tue Oct 16 12:16:25 2018
 import numpy as np
 #import scipy.stats as sp
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 import scipy.io
 import someFunctions as sf
-import area2d
 
 variavel = 1;
 
@@ -37,22 +37,20 @@ def gethist(data,i):
 def plothist(x,y,i,tip,c):
     #import matplotlib.pyplot as plt
     ## Plot things
-    #orange = '#ff7f0eff'
-    plt.bar(x, y, width = (np.diff(x)[0]), align='center', alpha = 0.5, color = c)
-    #hist, = ax1.plot(x,y,label=tip)
+    plt.bar(x, y, width = (np.diff(x)[0]), align='center', alpha = 0.5, color = c, label=tip)
     ax1.set_ylabel('Normalized Histogram', fontsize = 16)
-    #ax1.legend([hist], [tip])
     ax1.set_xlabel('Variable ' + str(i), fontsize = 16)
     
 if __name__ == '__main__':
     mat = scipy.io.loadmat(path, variable_names = [path2, path3], matlab_compatible = True)
     datas = mat.get(path2) 
     datab = mat.get(path3) 
-
-
-    #for i in range(24):
-    i=1;
-
+    
+    # Vector Variables
+    vector = np.array([1, 3, 4, 9, 10, 14, 27, 36, 46, 50, 62, 65, 69, 73, 74, 75, 77, 79, 83, 87, 89, 91, 94, 95],dtype='int')
+    
+    #for i in vector[21]:
+    i=91;
     x1,y1=gethist(datas,i)
     x2,y2=gethist(datab,i)
     ## Plot things
