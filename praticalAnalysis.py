@@ -9,7 +9,8 @@ import numpy as np
 #import scipy.stats as sp
 import matplotlib.pyplot as plt
 import scipy.io
-#import someFunctions as sf
+import someFunctions as sf
+import area2d
 
 variavel = 1;
 
@@ -26,8 +27,10 @@ path3='backgroundPatterns_etBin_' + str(et) + '_etaBin_' + str(eta)
 def gethist(data,i):
     #import numpy as np
     data = np.array(data[:,i]) # For converting to numpy array
-    y,x = np.histogram(data,bins = 1000,normed = True)
-    x = np.mean(np.array([x[:-1],x[1:]]),0)
+    x,y = sf.ash(data,m=10,tip='linear')
+    ah=sf.area2d(x,y)
+    y=np.true_divide(y,ah)
+    #x = np.mean(np.array([x[:-1],x[1:]]),0)
     
     return x,y
 
@@ -56,3 +59,4 @@ if __name__ == '__main__':
     fig, ax1 = plt.subplots(figsize=(8,6),dpi=100)
     plothist(x1,y1,i,'Signal')
     plothist(x2,y2,i,'Background')
+    #plt.legend()

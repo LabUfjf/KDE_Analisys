@@ -1,4 +1,4 @@
-def ash(data,m=10,tip='NEAREST'):
+def ash(data,m=10,tip='nearest'):
 
     """
     #ASH  AVERAGE SHIFT HISTOGRAM.
@@ -22,46 +22,64 @@ def ash(data,m=10,tip='NEAREST'):
     
     """
 
-import numpy as np
+    import numpy as np
+    from scipy.interpolate import interp1d
+    
+    if np.size(data) > 100000 :
+        binning = int(np.round(bin_fd(data)))
+    else:
+        binning=int(np.round(np.sqrt(np.size(data))))
+            
+    
+    if binning < 10 :
+        binning=int(np.round(np.sqrt(np.size(data))))
+    
+    h=(np.max(data)-np.min(data))/binning;
+    
+    ## AVERAGE SHIFT HISTOGRAM
+    
+    
+    t0=np.linspace(0,(h-(h/m)),m)
+    
+    fa = np.zeros((m,binning-1),dtype=float)
+    xa = np.zeros((m,binning-1),dtype=float)
+    
+    
+    for j in range(m):
+        gridx=np.arange((np.min(data)+t0[j]-h/2),(np.max(data)+t0[j]-h/2),h)
+        for i in range(binning-1):
+            fa[j,i]=np.size(np.where(np.logical_and(data>=gridx[i], data<=gridx[i+1])))
+            xa[j,i]=(gridx[i]+gridx[i+1])/2;
+    
+    newgrid = np.sort(np.reshape(xa,(np.size(xa),1))[:,0])
+    
+    ##PAREI AQUI
+    
+    # probs = interp1d(X_sig,Y_sig, kind = 'nearest', bounds_error = False, fill_value = 'extrapolate')
+    
+    fsh = np.empty((m,),dtype=object)
+    fshd = np.zeros((m,np.size(newgrid)),dtype=float)
+    for k in range(m):
+        fsh[k] = interp1d(xa[k,:],fa[k,:], kind = tip, bounds_error = False, fill_value = 0)
+        fshd[k] = fsh[k](newgrid)
+        #fsh(k,:)=interp1(xa(k,:),fa(k,:),newgrid,type,0);
+    
+    
+    fash=np.mean(fshd,0);
+    
+    x=newgrid
+    #ind = np.argsort(newgrid[:,0])
+    y=fash
+    
+    return x,y
 
-binning = int(np.round(bin_fd(data)))
-
-if binning < 10 :
-    binning=10
-
-h=(np.max(data)-np.min(data))/binning;
-
-%% AVERAGE SHIFT HISTOGRAM
-
-
-t0=np.linspace(0,(h-(h/m)),m)
-
-fa = xa = np.zeros((m,binning-1),dtype=float)
-
-
-for j in range(m):
-    gridx=np.arange((np.min(data)+t0[j]),(np.max(data)+t0[j]),h)
-    for i in range(binning-1):
-        fa[j,i]=np.size(np.where(np.logical_and(data>=gridx[i], data<=gridx[i+1])))
-        xa[j,i]=(gridx[i]+gridx[i+1])/2;
-
-newgrid = np.reshape(xa,(1,np.size(xa)))
-
-##PAREI AQUI
-
-for k in range(m-1):
-
-    fsh(k,:)=interp1(xa(k,:),fa(k,:),newgrid,type,0);
-
-
-fash=mean(fsh,1);
-
-if nargout > 0
-    x=newgrid;
-    y=fash;
-else
-    bar(newgrid,fash,1,'hist')
-end
+def area2d(x,y):
+    import numpy as np
+    
+    tbin = min(np.diff(x))
+    area = np.sum(np.abs(y))*np.abs(tbin);
+    
+    return area
 
 def bin_fd(x):
     """
@@ -88,5 +106,7 @@ def bin_fd(x):
     -------
     h : An estimate of the optimal bin width for the given data.
     """
+    import numpy as np
+    
     iqr = np.subtract(*np.percentile(x, [75, 25]))
     return 2.0 * iqr * x.size ** (-1.0 / 3.0)

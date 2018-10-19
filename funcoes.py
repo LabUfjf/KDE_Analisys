@@ -3,6 +3,14 @@
 Created on Wed Nov  8 10:32:13 2017
 
 @author: Rafael
+
+In this file we have a few functions:
+    - crossValidation
+    - Kernels
+    - Likelihood
+    - Roc
+
+
 """
 
 def crossValidation(ind1,numblock,k,aux):
