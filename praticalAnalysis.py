@@ -47,14 +47,14 @@ if __name__ == '__main__':
     datab = mat.get(path3) 
     
     # Vector Variables
-    vector = np.array([1, 3, 4, 9, 10, 14, 27, 36, 46, 50, 62, 65, 69, 73, 74, 75, 77, 79, 83, 87, 89, 91, 94, 95],dtype='int')
+    vector = np.array(([1, 3, 4, 9, 10, 14, 27, 36, 46, 50, 62, 65, 69, 73, 74, 75, 77, 79, 83, 87, 89, 91, 94, 95]),dtype='int')
     
-    #for i in vector[21]:
-    i=91;
-    x1,y1=gethist(datas,i)
-    x2,y2=gethist(datab,i)
-    ## Plot things
-    fig, ax1 = plt.subplots(figsize=(8,6),dpi=100)
-    plothist(x1,y1,i,'Signal','Blue')
-    plothist(x2,y2,i,'Background', 'Red')
-    plt.legend()
+    for i in (vector-1):
+    #i=95;
+        x1,y1=gethist(datas,i)
+        x2,y2=gethist(datab,i)
+        ## Plot things
+        fig, ax1 = plt.subplots(figsize=(8,6),dpi=100)
+        plothist(x1,y1,(i+1),'Signal','Blue')
+        plothist(x2,y2,(i+1),'Background', 'Red')
+        plt.legend()
