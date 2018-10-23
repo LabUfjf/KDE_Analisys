@@ -13,7 +13,7 @@ In this file we have a few functions:
 
 """
 
-def crossValidation(ind1,numblock,k,aux):
+def crossValidation(ind,numblock,aux):
     
     '''
     ind1 = eventos
@@ -23,26 +23,26 @@ def crossValidation(ind1,numblock,k,aux):
     '''
     
     import numpy as np
-    from scipy.interpolate import interp1d
-    from scipy.interpolate import PchipInterpolator
-    from scipy.interpolate import Akima1DInterpolator
-    from scipy.interpolate import pchip_interpolate
+#    from scipy.interpolate import interp1d
+#    from scipy.interpolate import PchipInterpolator
+#    from scipy.interpolate import Akima1DInterpolator
+#    from scipy.interpolate import pchip_interpolate
     
-    inde = ind1
     
-    event = int(len(inde)/numblock)
+    event = int(len(ind)/numblock)
     
-    blocksort = np.roll(range(1,numblock+1),(aux))
+    blocksort = np.array(np.roll(np.arange(0,numblock,1),(aux-1)),dtype='int')
     
     indet = []
     
-    for i in blocksort[0:len(blocksort)//k]:
-        indet.append(inde[event*(i-1):event*i])
+    for i in blocksort[0:numblock-1]:
+        indet.append(ind[event*(i-1):event*i])
         
     indev = []
     
-    for i in blocksort[len(blocksort)//k:]:
-        indev.append(inde[event*(i-1):event*i])
+    #for i in blocksort[numblock-1]:
+    i = blocksort[numblock-1]
+    indev.append(ind[event*(i-1):event*i])
         
    # return np.concatenate(indek),np.concatenate(indev)
     '''
