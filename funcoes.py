@@ -36,13 +36,13 @@ def crossValidation(ind,numblock,aux):
     indet = []
     
     for i in blocksort[0:numblock-1]:
-        indet.append(ind[event*(i-1):event*i])
+        indet.append(ind[event*(i):event*(i+1)])
         
     indev = []
     
     #for i in blocksort[numblock-1]:
     i = blocksort[numblock-1]
-    indev.append(ind[event*(i-1):event*i])
+    indev.append(ind[event*(i):event*(i+1)])
         
    # return np.concatenate(indek),np.concatenate(indev)
     '''

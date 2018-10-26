@@ -12,12 +12,13 @@ import matplotlib.patches as mpatches
 import scipy.io
 import someFunctions as sf
 import funcoes as fc
+import KDEfunctions as KDE
 
 path='D:\PcLab\MedidasWerner\mc16_13TeV.second.sgn.truth.bkg.truth.offline.binned.lhmedium.calo.mat'
 ###############################################################################
 ## Control Variables
 nroc = 10
-npts = 100
+npts = 20
 doPlot = 0
 variavel = 1
 eta=2;
@@ -44,12 +45,17 @@ def plothist(x,y,i,tip,c):
     ax1.set_ylabel('Normalized Histogram', fontsize = 16)
     ax1.set_xlabel('Variable ' + str(i), fontsize = 16)
     
+def plotASH(datas,i,leg,color):
+    
+    x1,y1=gethist(datas,i)
+    plothist(x1,y1,(i+1),leg, color)
+    
 if __name__ == '__main__':
     mat = scipy.io.loadmat(path, variable_names = [path2, path3], matlab_compatible = True)
     datas = mat.get(path2) 
     datab = mat.get(path3) 
     
-    dataall = np.concatenate([datas,datab])
+    #dataall = np.concatenate([datas,datab])
     target = np.concatenate([np.ones(np.size(datas,0)),np.zeros(np.size(datab,0))])
     
     
@@ -76,6 +82,25 @@ if __name__ == '__main__':
             [indet, indev] = fc.crossValidation(np.arange(0,np.size(datas[:,v]),1),nroc,i)
             [indjt, indjv] = fc.crossValidation(np.arange(0,np.size(datab[:,v]),1),nroc,i)
             
-            cdf_sig = fc.kernels(datas[indet,v],npts,1,'cdf')
-            plt.plot(cdf_sig[0],cdf_sig[1],'-o',label = 'cdf_sig')
+            #samplingMethod(data, nPoint, kind = 'Linspace')
+            kind = 'Linspace'
+            
+            cdf_sig = KDE.kdeClean(datas[indet,v],npts,1)
+            cdf_bg = KDE.kdeClean(datab[indjt,v],npts,1)
+            
+            if doPlot == 1:
+                fig, ax1 = plt.subplots(figsize=(8,6),dpi=100)
+                plotASH(datas[indet,:],v,'Signal ASH', 'Blue')
+                plotASH(datab[indjt,:],v,'Backgorund ASH', 'Red')
+                plt.plot(cdf_sig[0],cdf_sig[1],'-ob',label = 'KDE Signal', alpha = 0.7)
+                plt.plot(cdf_bg[0],cdf_bg[1],'-or', label = 'KDE Background', alpha = 0.7)
+                plt.legend()
+                plt.title('Method = %s - KernelPoints = %d - CV = %d' %(kind,npts,(i+1)))
+                fig.savefig('./Figures/DIST/dist' + str(v+1) + 'cv' + str(i+1) + kind + 'pts' + str(npts) + '.png', bbox_inches='tight')
+                plt.close(fig)
+                
+            sig,bg,DL = fc.likelihood(cdf_sig[0],cdf_sig[1],cdf_bg[0],cdf_bg[1],datas[indev,v],datab[indjv,v])
+            
+            y, x = fc.roc(target,DL)
+            plt.plot(x,1-y,label = ['ROC ' + (i+1)])
             
