@@ -56,7 +56,7 @@ if __name__ == '__main__':
     datab = mat.get(path3) 
     
     #dataall = np.concatenate([datas,datab])
-    target = np.concatenate([np.ones(np.size(datas,0)),np.zeros(np.size(datab,0))])
+    #target = np.concatenate([np.ones(np.size(datas,0)),np.zeros(np.size(datab,0))])
     
     
     # Vector Variables
@@ -76,12 +76,18 @@ if __name__ == '__main__':
             plt.legend()
     ###########################################################################
     
-    for v in (vector-1):
+    for i in range(nroc):
     
-        for i in range(nroc):
-            [indet, indev] = fc.crossValidation(np.arange(0,np.size(datas[:,v]),1),nroc,i)
-            [indjt, indjv] = fc.crossValidation(np.arange(0,np.size(datab[:,v]),1),nroc,i)
-            
+        [indet, indev] = fc.crossValidation(np.arange(0,np.size(datas[:,0]),1),nroc,i)
+        [indjt, indjv] = fc.crossValidation(np.arange(0,np.size(datab[:,0]),1),nroc,i)
+        
+        targett = np.concatenate([np.ones(np.size(indet,0)),np.zeros(np.size(indjt,0))])
+        targetv = np.concatenate([np.ones(np.size(indev,0)),np.zeros(np.size(indjv,0))])
+        
+        Ls1=np.zeros(np.size(targetv,0))
+        Lb1=np.zeros(np.size(targetv,0))
+        
+        for v in (vector-1):                                    
             #samplingMethod(data, nPoint, kind = 'Linspace')
             kind = 'Linspace'
             
@@ -99,8 +105,16 @@ if __name__ == '__main__':
                 fig.savefig('./Figures/DIST/dist' + str(v+1) + 'cv' + str(i+1) + kind + 'pts' + str(npts) + '.png', bbox_inches='tight')
                 plt.close(fig)
                 
-            sig,bg,DL = fc.likelihood(cdf_sig[0],cdf_sig[1],cdf_bg[0],cdf_bg[1],datas[indev,v],datab[indjv,v])
+            Ls,Lb = fc.likelihood(cdf_sig[0],cdf_sig[1],cdf_bg[0],cdf_bg[1],datas[indev,v],datab[indjv,v])
             
-            y, x = fc.roc(target,DL)
-            plt.plot(x,1-y,label = ['ROC ' + (i+1)])
+            Ls1=(Ls1+np.log10(Ls));
+            Lb1=(Lb1+np.log10(Lb));
             
+        dL = fc.calcDL(Ls1,Lb1)
+        y, x,auc = fc.roc(targetv,dL)
+        
+        plt.plot(x,1-y,label = ['ROC ' + str(i+1)])
+        plt.title('Method = %s - KernelPoints = %d - CV = %d' %(kind,npts,(i+1)))
+        plt.xlabel('Signal Efficiency', fontsize = 16)
+        plt.ylabel('Background Rejection', fontsize = 16)
+        plt.legend()

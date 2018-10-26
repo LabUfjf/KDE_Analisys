@@ -9,6 +9,7 @@ In this file we have a few functions:
     - Kernels
     - Likelihood
     - Roc
+    - calcDL
 
 
 """
@@ -251,9 +252,13 @@ def likelihood(X_sig,Y_sig, X_bg, Y_bg, validation_sig_x, validation_bg_x):
 # =============================================================================
      
         
-     DL = sig/(sig+bg)
+     #DL = sig/(sig+bg)
      
-     return sig,bg,DL
+     return sig,bg
+ 
+def calcDL(sig,bg):
+    dL = sig-bg
+    return dL
      
 def roc(test,pred,kind = '-'):
     import matplotlib.pyplot as plt
