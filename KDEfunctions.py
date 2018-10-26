@@ -36,16 +36,19 @@ def samplingMethod(data, nPoint, kind = 'Linspace'):
              Sampling X axis of a distribuition,
     """
     import methodDisc as md
-    if kind == 'Linspace': 
+    import numpy as np
+    kind = kind.upper()
+    
+    if kind == 'LINSPACE': 
         X = np.linspace(np.min(data),np.max(data),nPoint)
-    elif kind == 'CDFm':
+    elif kind == 'CDFM':
         X = md.CDFm(data,nPoint)
-#    elif kind == 'PDFm':
-#        X = pdfm()
-#    elif kind == 'iPDF1':
-#        X = ipdf1()
-#    elif kind == 'iPDF2':
-#        X = ipdf2()
+    elif kind == 'PDFM':
+        X = md.PDFm(data,nPoint)
+    elif kind == 'IPDF1':
+        X = md.iPDF1(data,nPoint)
+    elif kind == 'IPDF2':
+        X = md.iPDF2(data,nPoint)
     
     return X
 
@@ -79,21 +82,22 @@ def kdeClean(data,nPoint,f,X):
 # =============================================================================
 #     Calculo do Valor ótimo da binagem
 # =============================================================================
-    yhko, xhko = np.histogram(data, bins = 'fd', normed = True)   
-    optN = len(xhko) - 1                # Histograma Normalizado do Kernel
-    xh = []
+    yhko, xhko = np.histogram(data, bins = 'fd', normed = True)  
+    xhko = np.mean(np.array([xhko[:-1],xhko[1:]]),0)
+    optN = len(xhko)                # Histograma Normalizado do Kernel
+    #xh = []
     
    
     
-    for i in range(len(yhko)):
-        xh.append((xhko[i]+xhko[i+1])/2.)
+   # for i in range(len(yhko)):
+   #     xh.append((xhko[i]+xhko[i+1])/2.)
        
     ''' xh.append(xhko[-1])
     xh.insert(0,xhko[0])
     yhko = list(yhko)
     yhko.insert(0,yhko[0])
     yhko.append(yhko[-1])'''
-    xhko = np.array(xh)
+    #xhko = np.array(xh)
     yhko = np.array(yhko)
     
     ind_0 = np.where(np.array(yhko)!=0)
