@@ -262,12 +262,13 @@ def calcDL(sig,bg):
      
 def roc(test,pred,kind = '-'):
     import matplotlib.pyplot as plt
+    from numpy import inf
     from sklearn.metrics import roc_curve, auc
     fpr = dict()
     tpr = dict()
     roc_auc = dict()
     for i in range(2):
-        fpr[i], tpr[i], _ = roc_curve(test, pred,pos_label=1)
+        fpr[i], tpr[i], _ = roc_curve(test, pred,pos_label=int(1e6))
         roc_auc[i] = auc(fpr[i], tpr[i])
     #plt.figure()
     #plt.plot(1-fpr[1], tpr[1],kind)

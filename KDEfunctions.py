@@ -35,11 +35,11 @@ def samplingMethod(data, nPoint, kind = 'Linspace'):
          X: float array
              Sampling X axis of a distribuition,
     """
-    
-#    if kind == 'Linspace': 
-    X = np.linspace(np.min(data),np.max(data),nPoint)
-#    elif kind == 'CDFm':
-#        X = cdfm()
+    import methodDisc as md
+    if kind == 'Linspace': 
+        X = np.linspace(np.min(data),np.max(data),nPoint)
+    elif kind == 'CDFm':
+        X = md.CDFm(data,nPoint)
 #    elif kind == 'PDFm':
 #        X = pdfm()
 #    elif kind == 'iPDF1':
@@ -49,7 +49,7 @@ def samplingMethod(data, nPoint, kind = 'Linspace'):
     
     return X
 
-def kdeClean(data,nPoint,f):
+def kdeClean(data,nPoint,f,X):
     '''
     ==========================================================================
      KERNEL Optimizer para problemas de 1 Dimensão:
@@ -135,7 +135,7 @@ def kdeClean(data,nPoint,f):
     fpi = fpi(data)
         
     ## Insert here the X axis
-    X = np.linspace(np.min(data),np.max(data),nPoint)
+    #X = np.linspace(np.min(data),np.max(data),nPoint)
     ####################################################
     
     hi = (np.abs(h*np.sqrt(np.abs(Lambda/fpi))).T)

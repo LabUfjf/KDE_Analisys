@@ -14,7 +14,8 @@ import someFunctions as sf
 import funcoes as fc
 import KDEfunctions as KDE
 
-path='D:\PcLab\MedidasWerner\mc16_13TeV.second.sgn.truth.bkg.truth.offline.binned.lhmedium.calo.mat'
+#path='D:\PcLab\MedidasWerner\mc16_13TeV.second.sgn.truth.bkg.truth.offline.binned.lhmedium.calo.mat'
+path='/media/atlas/Dados2/MedidasWerner/mc16_13TeV.second.sgn.truth.bkg.truth.offline.binned.lhmedium.calo.mat'
 ###############################################################################
 ## Control Variables
 nroc = 10
@@ -81,18 +82,20 @@ if __name__ == '__main__':
         [indet, indev] = fc.crossValidation(np.arange(0,np.size(datas[:,0]),1),nroc,i)
         [indjt, indjv] = fc.crossValidation(np.arange(0,np.size(datab[:,0]),1),nroc,i)
         
-        targett = np.concatenate([np.ones(np.size(indet,0)),np.zeros(np.size(indjt,0))])
-        targetv = np.concatenate([np.ones(np.size(indev,0)),np.zeros(np.size(indjv,0))])
+        targett = np.concatenate([int(1e6)*np.ones(np.size(indet,0)),np.zeros(np.size(indjt,0))])
+        targetv = np.concatenate([int(1e6)*np.ones(np.size(indev,0)),np.zeros(np.size(indjv,0))])
         
         Ls1=np.zeros(np.size(targetv,0))
         Lb1=np.zeros(np.size(targetv,0))
         
         for v in (vector-1):                                    
-            #samplingMethod(data, nPoint, kind = 'Linspace')
-            kind = 'Linspace'
+            kind = 'CDFm'
             
-            cdf_sig = KDE.kdeClean(datas[indet,v],npts,1)
-            cdf_bg = KDE.kdeClean(datab[indjt,v],npts,1)
+            X = KDE.samplingMethod(data, nPoint, kind)
+            
+            
+            cdf_sig = KDE.kdeClean(datas[indet,v],npts,1,X)
+            cdf_bg = KDE.kdeClean(datab[indjt,v],npts,1,X)
             
             if doPlot == 1:
                 fig, ax1 = plt.subplots(figsize=(8,6),dpi=100)
