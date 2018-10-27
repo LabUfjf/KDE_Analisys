@@ -21,7 +21,7 @@ path='/media/atlas/Dados2/MedidasWerner/mc16_13TeV.second.sgn.truth.bkg.truth.of
 nroc = 10
 npts = 20
 doPlot = 0
-variavel = 1
+#variavel = 1
 eta=2;
 et=4;
 path2='signalPatterns_etBin_' + str(et) + '_etaBin_' + str(eta)
@@ -89,20 +89,27 @@ if __name__ == '__main__':
         Lb1=np.zeros(np.size(targetv,0))
         
         for v in (vector-1):                                    
-            kind = 'CDFm'
+            kind = 'ipdf2'
             
-            X = KDE.samplingMethod(data, nPoint, kind)
+            Xs = KDE.samplingMethod(datas[indet,v], npts, kind)
+            Xb = KDE.samplingMethod(datab[indjt,v], npts, kind)
             
             
-            cdf_sig = KDE.kdeClean(datas[indet,v],npts,1,X)
-            cdf_bg = KDE.kdeClean(datab[indjt,v],npts,1,X)
+            cdf_sig = np.array(KDE.kdeClean(datas[indet,v],npts,1,Xs))
+            cdf_bg = np.array(KDE.kdeClean(datab[indjt,v],npts,1,Xb))
+            
+            cdf_sig[0] = cdf_sig[0][:npts]
+            cdf_sig[1] = cdf_sig[1][:npts]
+            
+            cdf_bg[0] = cdf_bg[0][:npts]
+            cdf_bg[1] = cdf_bg[1][:npts]
             
             if doPlot == 1:
                 fig, ax1 = plt.subplots(figsize=(8,6),dpi=100)
                 plotASH(datas[indet,:],v,'Signal ASH', 'Blue')
                 plotASH(datab[indjt,:],v,'Backgorund ASH', 'Red')
-                plt.plot(cdf_sig[0],cdf_sig[1],'-ob',label = 'KDE Signal', alpha = 0.7)
-                plt.plot(cdf_bg[0],cdf_bg[1],'-or', label = 'KDE Background', alpha = 0.7)
+                plt.plot(cdf_sig[0][:npts],cdf_sig[1],'-ob',label = 'KDE Signal', alpha = 0.7)
+                plt.plot(cdf_bg[0][:npts],cdf_bg[1],'-or', label = 'KDE Background', alpha = 0.7)
                 plt.legend()
                 plt.title('Method = %s - KernelPoints = %d - CV = %d' %(kind,npts,(i+1)))
                 fig.savefig('./Figures/DIST/dist' + str(v+1) + 'cv' + str(i+1) + kind + 'pts' + str(npts) + '.png', bbox_inches='tight')

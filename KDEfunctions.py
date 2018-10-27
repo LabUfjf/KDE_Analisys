@@ -6,8 +6,8 @@ Created on Thu Oct 25 17:57:59 2018
 @author2: Igor Abritta
 
 In this file we have a few functions:
-    - KernelClean2
-    - 
+    - kdeClean
+    - samplingMethod
     - 
 
 """
