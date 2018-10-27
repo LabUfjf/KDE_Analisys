@@ -1,4 +1,16 @@
+"""
+Created on Fri Oct 26 14:57:59 2018
 
+@author: Rafael Mascarenha
+@author2: Igor Abritta
+
+In this file we have a few functions:
+    - CDFm
+    - PDFm
+    - iPDF1
+    - iPDF2
+
+"""
 
 
 def CDFm(data,nPoint):
