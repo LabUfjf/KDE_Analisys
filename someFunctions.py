@@ -13,7 +13,7 @@ In this file we have a few functions:
 
 
 
-def ash(data,m=10,tip='nearest'):
+def ash(data,m=10,tip='nearest',normed=False):
 
     """
     #ASH  AVERAGE SHIFT HISTOGRAM.
@@ -85,8 +85,15 @@ def ash(data,m=10,tip='nearest'):
     x=newgrid
     #ind = np.argsort(newgrid[:,0])
     y=fash
+    if normed == False:
+        return x,y
+    elif normed == True:
+        ah=area2d(x,y)
+        y=np.true_divide(y,ah)
+        return x,y
     
-    return x,y
+
+
 
 def area2d(x,y):
     import numpy as np

@@ -74,6 +74,7 @@ def kdeClean(data,nPoint,f,X):
     #from kernelND import kernelND
     from area2d import area2d
     from numpy.matlib import repmat
+    from someFunctions import ash
     
     
     numDiv = 10
@@ -82,12 +83,14 @@ def kdeClean(data,nPoint,f,X):
 # =============================================================================
 #     Calculo do Valor ótimo da binagem
 # =============================================================================
-    yhko, xhko = np.histogram(data, bins = 'fd', normed = True)  
+    #yhko, xhko = ash(data,m=10,tip='linear',normed=True)
+    #m = np.where(yhko == 0)
+    #yhko[m]=np.min(yhko)
+    
+    yhko, xhko = np.histogram(data, bins = 'fd', density = True)  
     xhko = np.mean(np.array([xhko[:-1],xhko[1:]]),0)
     optN = len(xhko)                # Histograma Normalizado do Kernel
     #xh = []
-    
-   
     
    # for i in range(len(yhko)):
    #     xh.append((xhko[i]+xhko[i+1])/2.)
@@ -122,7 +125,7 @@ def kdeClean(data,nPoint,f,X):
     h = ((4./(nd+2))**(1/(nd+4)))*np.std(data, ddof=1)*n**(-1/(nd+4));
     h =h*f
     
-    fp_pdf,x = np.histogram(data,optN, normed = True)
+    fp_pdf,x = np.histogram(data,optN, density = True)
     x2 = []
     for i in range(len(fp_pdf)):
         x2.append((x[i]+x[i+1])/2.)

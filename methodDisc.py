@@ -35,7 +35,7 @@ def PDFm(data,nPoint):
     from scipy.interpolate import interp1d
     eps = 5e-5
     
-    yest,xest = np.histogram(data,bins = 'fd',normed = True)
+    yest,xest = np.histogram(data,bins = 'fd',density = True)
     xest = np.mean(np.array([xest[:-1],xest[1:]]),0)
     M = np.where(yest == max(yest))[0][0]
     m = np.where(yest == min(yest))[0][0]
@@ -66,10 +66,14 @@ def iPDF1(data,nPoint):
     import numpy as np
     from scipy.interpolate import interp1d
     from methodDisc import mediaMovel
+    from someFunctions import ash
     eps = 5e-5
     n = 5
               
-    y,x = np.histogram(data,bins = 'fd',normed = True)
+    #x,y = ash(data,m=10,tip='linear',normed=True)
+    #m = np.where(y == 0)
+    #y[m]=np.min(y)
+    y,x = np.histogram(data,bins = 'fd',density = True)
     x = np.mean(np.array([x[:-1],x[1:]]),0)
   
     y = abs(np.diff(mediaMovel(y,n)))
@@ -87,10 +91,14 @@ def iPDF1(data,nPoint):
 def iPDF2(data,nPoint):
     import numpy as np
     from scipy.interpolate import interp1d
+    from someFunctions import ash
     eps = 5e-5
     n = 5
           
-    y,x = np.histogram(data,bins = 'fd',normed = True)
+#    x,y = ash(data,m=10,tip='linear',normed=True)
+#    m = np.where(y == 0)
+#    y[m]=np.min(y)
+    y,x = np.histogram(data,bins = 'fd',density = True)
     x = np.mean(np.array([x[:-1],x[1:]]),0)
   
     y = abs(np.diff(mediaMovel(y,n),2))
