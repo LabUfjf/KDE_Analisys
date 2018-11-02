@@ -126,4 +126,6 @@ $RECYCLE.BIN/
 *.png
 *.pdf
 
+# Matlab Files
+*.mat
 # End of https://www.gitignore.io/api/python,windows

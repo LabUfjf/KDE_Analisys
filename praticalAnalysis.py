@@ -91,14 +91,14 @@ if __name__ == '__main__':
         
         for npts in pts:    
 
-            if os.path.isfile('./Figures/ROC/ROC' + kind + 'pts' + str(npts) + '.png') :
-                print ('ROC já salva..próxima\n')
-            else:
+            if rocPlot == 1 :
                 fig2, ax2 = plt.subplots(figsize=(8,6),dpi=100)
                 
-                for i in range(nroc):
+            for i in range(nroc):
+                if os.path.isfile('./savedVariables/DL/DL' + kind + 'pts' + str(npts) + 'cv' + str(i+1) + '.mat') :
+                    print ('DL já salva..próxima\n')
+                else:
                 
-                    
                     print('#\nMethod = %s - KernelPoints = %d - CV = %d' %(kind,npts,(i+1)))
                     [indet, indev] = fc.crossValidation(np.arange(0,np.size(datas[:,0]),1),nroc,i)
                     [indjt, indjv] = fc.crossValidation(np.arange(0,np.size(datab[:,0]),1),nroc,i)
@@ -110,38 +110,45 @@ if __name__ == '__main__':
                     Lb1=np.zeros(np.size(targetv,0))
                     
                     for v in (vector-1):
-                                   
-                        Xs = KDE.samplingMethod(datas[indet,v], npts, kind)
-                        Xb = KDE.samplingMethod(datab[indjt,v], npts, kind)
-                        
-                        
-                        cdf_sig = np.array(KDE.kdeClean(datas[indet,v],npts,1,Xs))
-                        cdf_bg = np.array(KDE.kdeClean(datab[indjt,v],npts,1,Xb))
-                        
-                        cdf_sig[0] = cdf_sig[0][:npts]
-                        cdf_sig[1] = cdf_sig[1][:npts]
-                        
-                        cdf_bg[0] = cdf_bg[0][:npts]
-                        cdf_bg[1] = cdf_bg[1][:npts]
-                        
-                        if save == 1:
-                            scipy.io.savemat('./savedVariables/KDE/KDEv' + str(v+1) + 'cv' + str(i+1) + kind + 'pts' + str(npts) + '.mat',{'sig':cdf_sig, 'bkg':cdf_bg})
-                        
-                        
-                        if doPlot == 1:
+                        if os.path.isfile('./savedVariables/KDE/KDEv' + str(v+1) + 'cv' + str(i+1) + kind + 'pts' + str(npts) + '.mat') :
+                            print ('KDE já salvo..próxima\n')
+                            kern = scipy.io.loadmat('./savedVariables/KDE/KDEv' + str(v+1) + 'cv' + str(i+1) + kind + 'pts' + str(npts) + '.mat', matlab_compatible = True)
+                            cdf_sig = kern.get('sig') 
+                            cdf_bg = kern.get('bkg')
                             
-                            if os.path.isfile('./Figures/DIST/dist' + str(v+1) + 'cv' + str(i+1) + kind + 'pts' + str(npts) + '.png') :
-                                print ('DIST já salva..próxima\n')
-                            else:
-                                fig, ax1 = plt.subplots(figsize=(8,6),dpi=100)
-                                plotASH(datas[indet,:],v,'Signal ASH', 'Blue')
-                                plotASH(datab[indjt,:],v,'Backgorund ASH', 'Red')
-                                plt.plot(cdf_sig[0][:npts],cdf_sig[1],'-ob',label = 'KDE Signal', alpha = 0.7)
-                                plt.plot(cdf_bg[0][:npts],cdf_bg[1],'-or', label = 'KDE Background', alpha = 0.7)
-                                plt.legend()
-                                plt.title('Method = %s - KernelPoints = %d - CV = %d' %(kind,npts,(i+1)))
-                                fig.savefig('./Figures/DIST/dist' + str(v+1) + 'cv' + str(i+1) + kind + 'pts' + str(npts) + '.png', bbox_inches='tight')
-                                plt.close(fig)
+                        else:
+                                   
+                            Xs = KDE.samplingMethod(datas[indet,v], npts, kind)
+                            Xb = KDE.samplingMethod(datab[indjt,v], npts, kind)
+                            
+                            
+                            cdf_sig = np.array(KDE.kdeClean(datas[indet,v],npts,1,Xs))
+                            cdf_bg = np.array(KDE.kdeClean(datab[indjt,v],npts,1,Xb))
+                            
+                            cdf_sig[0] = cdf_sig[0][:npts]
+                            cdf_sig[1] = cdf_sig[1][:npts]
+                            
+                            cdf_bg[0] = cdf_bg[0][:npts]
+                            cdf_bg[1] = cdf_bg[1][:npts]
+                            
+                            if save == 1:
+                                scipy.io.savemat('./savedVariables/KDE/KDEv' + str(v+1) + 'cv' + str(i+1) + kind + 'pts' + str(npts) + '.mat',{'sig':cdf_sig, 'bkg':cdf_bg})
+                            
+                            
+                            if doPlot == 1:
+                                
+                                if os.path.isfile('./Figures/DIST/dist' + str(v+1) + 'cv' + str(i+1) + kind + 'pts' + str(npts) + '.png') :
+                                    print ('DIST já salva..próxima\n')
+                                else:
+                                    fig, ax1 = plt.subplots(figsize=(8,6),dpi=100)
+                                    plotASH(datas[indet,:],v,'Signal ASH', 'Blue')
+                                    plotASH(datab[indjt,:],v,'Backgorund ASH', 'Red')
+                                    plt.plot(cdf_sig[0][:npts],cdf_sig[1],'-ob',label = 'KDE Signal', alpha = 0.7)
+                                    plt.plot(cdf_bg[0][:npts],cdf_bg[1],'-or', label = 'KDE Background', alpha = 0.7)
+                                    plt.legend()
+                                    plt.title('Method = %s - KernelPoints = %d - CV = %d' %(kind,npts,(i+1)))
+                                    fig.savefig('./Figures/DIST/dist' + str(v+1) + 'cv' + str(i+1) + kind + 'pts' + str(npts) + '.png', bbox_inches='tight')
+                                    plt.close(fig)
                             
                         Ls,Lb = fc.likelihood(cdf_sig[0],cdf_sig[1],cdf_bg[0],cdf_bg[1],datas[indev,v],datab[indjv,v])
                         
