@@ -4,6 +4,7 @@ Created on Wed Oct  17 10:32:13 2018
 @author: Igor
 
 In this file we have a few functions:
+    - downsamp
     - ash
     - area2d
     - bin_fd
@@ -12,6 +13,12 @@ In this file we have a few functions:
 """
 
 
+def downsamp(data):
+    import numpy as np
+    
+    if np.size(data,0) > 200000:
+        data = data[0:(200000-1),:]
+    return data
 
 def ash(data,m=10,tip='nearest',normed=False):
 

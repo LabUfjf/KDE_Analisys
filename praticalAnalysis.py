@@ -66,8 +66,8 @@ def plotASH(datas,i,leg,color):
     plothist(x1,y1,(i+1),leg, color)
     
 def downsamp(data):
-    if np.size(datas,0) > 200000:
-        data = data[1:200000,:]
+    if np.size(data,0) > 200000:
+        data = data[0:(200000-1),:]
     return data
     
 if __name__ == '__main__':
