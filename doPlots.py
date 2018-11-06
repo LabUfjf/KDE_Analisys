@@ -108,14 +108,18 @@ def plotROCs(kind = 'LINSPACE', npts = 10, eta = 2, et = 4):
     targetv = np.concatenate([int(1e6)*np.ones(int((np.size(datas,0)/10))),np.zeros(int((np.size(datab,0)/10)))])
     
     fig2, ax1 = plt.subplots(figsize=(8,6),dpi=100)
+    
+    sp = np.zeros(10,1)
+    
     for i in range(10):
         dL1 = scipy.io.loadmat('./savedVariables/DL/DL' + kind + 'pts' + str(npts) + 'cv' + str(i+1) + '.mat', matlab_compatible = True)
         dL = np.transpose(dL1.get('dL'))
         
         y,x,auc = fc.roc(targetv,dL)
+        sp[i] = sf.bestSP(x,y)
         
-        plt.plot(x,1-y,label = ['ROC ' + str(i+1) + ' - AUC = ' + str(100*auc)])
-    plt.title('Method = %s - KernelPoints = %d' %(kind,npts))
+        plt.plot(x,1-y,label = ['ROC %d - AUC = %f.2 - SP = %f.2' %((i+1),str(100*auc),sp[i])])
+    plt.title('Method = %s - KernelPoints = %d - mean(SP) = %f.2' %(kind,npts,np.mean(sp)))
     plt.xlabel('Signal Efficiency', fontsize = 16)
     plt.ylabel('Background Rejection', fontsize = 16)
     plt.xlim(0.5, 1) 

@@ -139,3 +139,11 @@ def bin_fd(x):
     
     iqr = np.subtract(*np.percentile(x, [75, 25]))
     return 2.0 * iqr * x.size ** (-1.0 / 3.0)
+
+def bestSP(x,y):
+    import numpy as np
+    
+    sp=np.sqrt(np.multiply(np.sqrt(np.multiply(x,(1-y))),(np.divide(x+(1-y),2))));
+    sp=np.max(sp)*100
+    
+    return sp
